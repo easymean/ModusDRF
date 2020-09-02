@@ -16,7 +16,7 @@ class ListReservationSerializer(serializers.ModelSerializer):
         fields = ["pk", "date", "place", "is_allowed", "check_in", "check_out", "guest"]
 
 
-class PlaceReservationSerializer(serializers.ModelSerializer):
+class ReservationSerializer(serializers.ModelSerializer):
     place = RelationPlaceSerializer(read_only=True)
     guest = RelationUserSerializer(read_only=True)
 

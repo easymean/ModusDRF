@@ -5,6 +5,7 @@ from common.models import Common
 
 
 class PlaceReservation(Common):
+
     is_allowed = models.CharField(max_length=5)
     payment_type = models.CharField(max_length=5)
     date = models.DateField(blank=False, null=False, default=date.today)

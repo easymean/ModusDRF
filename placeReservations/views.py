@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import permissions, status, generics
 
 from .models import PlaceReservation
-from .serializers import PlaceReservationSerializer, ListReservationSerializer
+from .serializers import ReservationSerializer, ListReservationSerializer
 
 from places.models import Place
 
@@ -20,12 +20,12 @@ class ReservationViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return ListReservationSerializer
         else:
-            return PlaceReservationSerializer
+            return ReservationSerializer
 
     def create(self, request, *args, **kwargs):
         place_id = self.kwargs["place_pk"]
-        place = Place.objects.filter(pk=place_id).first()
-        serializer = PlaceReservationSerializer(
+        place = Place.objects.filter(pk=place_id, is_active=True).first()
+        serializer = ReservationSerializer(
             data=request.data, context={"request": request, "place": place}
         )
         try:
@@ -45,7 +45,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
 # reserv/:id/
 class ReadDeleteReservaionView(generics.RetrieveDestroyAPIView):
     queryset = PlaceReservation.objects.filter(is_active=True)
-    serializer_class = PlaceReservationSerializer
+    serializer_class = ReservationSerializer
 
     def destroy(self, request, *args, **kwargs):
         reserv = self.get_object()
