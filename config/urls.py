@@ -24,4 +24,5 @@ urlpatterns = [
     path("v1/places/", include("places.urls")),
     path("v1/classes/", include("classes.urls")),
     path("v1/placeReservations/", include("placeReservations.urls")),
+    path("v1/placeReviews/", include("placeReviews.urls")),
 ]

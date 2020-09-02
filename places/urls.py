@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 from placeReservations import views as reserviews
+from placeReviews import views as revviews
 
 app_name = "places"
 
@@ -15,14 +16,18 @@ reservation_list = reserviews.ReservationViewSet.as_view(
     {"post": "create", "get": "list"}
 )
 
-resevervation_detail = reserviews.ReservationViewSet.as_view(
+reservation_detail = reserviews.ReservationViewSet.as_view(
     {"get": "retrieve", "delete": "destroy"}
 )
 
+review_list = revviews.ReviewViewSet.as_view({"get": "list", "post": "create"})
+review_detail = revviews.ReviewViewSet.as_view({"get": "retrieve", "delete": "destroy"})
 
 urlpatterns = [
     path("", place_list),
     path("<int:pk>/", place_detail),
     path("<int:place_pk>/reservations/", reservation_list),
-    path("<int:place_pk>/reservations/<int:pk>/", resevervation_detail),
+    path("<int:place_pk>/reservations/<int:pk>/", reservation_detail),
+    path("<int:place_pk>/reviews/", review_list),
+    path("<int:place_pk>/reviews/<int:pk>/", review_detail),
 ]

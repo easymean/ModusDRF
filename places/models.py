@@ -21,6 +21,22 @@ class Place(common_models.Common):
     def __str__(self):
         return f"pk:{self.pk}  name:{self.name}"
 
+    def get_total_rating(self):
+        all_reviews = self.reviews.all()
+        all_ratings = 0
+        if len(all_reviews) > 0:
+            for review in all_reviews:
+                all_ratings += review.rate
+            return round(all_ratings / len(all_reviews), 2)
+        return 0
+
+    def get_first_photo(self):
+        try:
+            (photo,) = self.photos.all()[:1]
+            return photo.file.url
+        except ValueError:
+            return None
+
     class Meta:
         ordering = ["-pk"]
 
