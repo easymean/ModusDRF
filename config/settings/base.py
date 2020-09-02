@@ -49,6 +49,7 @@ PROJECT_APPS = [
     "hosts.apps.HostsConfig",
     "placeReservations.apps.PlacereservationsConfig",
     "placeReviews.apps.PlacereviewsConfig",
+    "qnas.apps.QnasConfig",
 ]
 
 THIRD_PARTY_APPS = [

@@ -50,7 +50,7 @@
 # PLACE REVIEWS
 
 - [ ] List Reviews
-- [ ] See Review
-- [ ] Create Review
+- [x] See Review
+- [x] Create Review
 - [ ] Edit Review
-- [ ] Delete Review
+- [x] Delete Review
