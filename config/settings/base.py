@@ -48,6 +48,7 @@ PROJECT_APPS = [
     "somms.apps.SommsConfig",
     "hosts.apps.HostsConfig",
     "placeReservations.apps.PlacereservationsConfig",
+    "placeReviews.apps.PlacereviewsConfig",
 ]
 
 THIRD_PARTY_APPS = [
