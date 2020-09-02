@@ -16,7 +16,7 @@ class PlaceReservation(Common):
         "places.Place", on_delete=models.CASCADE, related_name="reservations"
     )
     guest = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE, related_name="reservations"
+        "users.User", on_delete=models.CASCADE, related_name="place_reservations"
     )
 
     def __str__(self):
