@@ -16,10 +16,8 @@ class PlaceViewSet(ModelViewSet):
     def get_permission(self):
         if self.action == "list" or self.action == "retrieve":
             permission_classes = [permissions.AllowAny]
-            # permission_classes = [IsHostAuthenticated]
         elif self.action == "create":
             permission_classes = [IsHostAuthenticated]
-            # permission_classes = [permissions.AllowAny]
         else:
             permission_classes = [IsOwner]
         return [permission() for permission in permission_classes]

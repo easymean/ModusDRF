@@ -1,17 +1,29 @@
 from rest_framework.response import Response
-from rest_framework import viewsets, serializers, status, generics
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework import serializers, status, permissions
 
 from .models import PlaceReview
 from .serializers import ReviewSerializer
 from places.models import Place
+from common.permissions import IsOwner
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(ModelViewSet):
 
     serializer_class = ReviewSerializer
 
+    def get_permission(self):
+        if self.action == "create":
+            permission_classes = [permissions.IsAuthenticated]
+        elif self.action == "list" or self.action == "retrieve":
+            permission_classes = [permissions.AllowAny]
+        else:  # delete and update
+            permission_classes = [IsOwner, permissions.IsAdminUser]
+        return [permission() for permission in permission_classes]
+
     def get_queryset(self):
-        place = Place.objects.filter(pk=self.kwargs["place_pk"], is_active=True)
+        place = Place.objects.filter(pk=self.kwargs["place_pk"], is_active=True).first()
         return PlaceReview.objects.filter(place=place, is_active=True)
 
     def create(self, request, *args, **kwargs):
@@ -34,9 +46,16 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return Response(data={"result": "success"}, status=status.HTTP_204_NO_CONTENT)
 
 
-class ReadUpdateDeleteReviewView(generics.RetrieveUpdateDestroyAPIView):
+class ReadUpdateDeleteReviewView(RetrieveUpdateDestroyAPIView):
     queryset = PlaceReview.objects.filter(is_active=True)
     serializer_class = ReviewSerializer
+
+    def get_permission(self):
+        if self.action == "retrieve":
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [IsOwner]
+        return [permission() for permission in permission_classes]
 
     def destroy(self, request, *args, **kwargs):
         review = self.get_object()

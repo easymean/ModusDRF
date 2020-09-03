@@ -7,7 +7,6 @@ class IsHostAuthenticated(IsOwner):
 
         if IsAuthenticated(request, view):
             host = request.user
-            print(host)
             # if host.is_auth is True:
             #     return True
             # else:

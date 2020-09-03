@@ -1,16 +1,25 @@
-from rest_framework import viewsets, serializers
 from rest_framework.response import Response
-from rest_framework import permissions, status, generics
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import RetrieveDestroyAPIView
+from rest_framework import permissions, status, serializers
 
 from .models import PlaceReservation
 from .serializers import ReservationSerializer, ListReservationSerializer
 
 from places.models import Place
+from common.permissions import IsOwner
+from common.paginations import OwnPagination
 
 # url place/:id/reserv/:id/
-class ReservationViewSet(viewsets.ModelViewSet):
+class ReservationViewSet(ModelViewSet):
+    pagination_class = OwnPagination()
+
     def get_permission(self):
-        pass
+        if self.action == "create":
+            permission_classes = [permissions.IsAuthenticated]
+        else:  # 수정 필요 place owner인 경우에만?
+            permission_classes = [IsOwner]
+        return [permission() for permission in permission_classes]
 
     def get_queryset(self):
         place = Place.objects.filter(pk=self.kwargs["place_pk"], is_active=True).first()
@@ -43,7 +52,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
 
 # reserv/:id/
-class ReadDeleteReservaionView(generics.RetrieveDestroyAPIView):
+class ReadDeleteReservaionView(RetrieveDestroyAPIView):
     queryset = PlaceReservation.objects.filter(is_active=True)
     serializer_class = ReservationSerializer
 

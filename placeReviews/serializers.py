@@ -15,3 +15,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = PlaceReview
         fields = "__all__"
         read_only_fields = ["pk", "created", "updated", "user", "place"]
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        place = self.context.get("place")
+        review = PlaceReview.objects.create(
+            **validated_data, user=request.user, place=place
+        )
+        return review
