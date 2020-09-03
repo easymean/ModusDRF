@@ -3,7 +3,7 @@ from common.models import Common
 
 
 class PlaceQuestion(Common):
-    question = models.Textfield()
+    question = models.TextField()
     place = models.ForeignKey(
         "places.Place", on_delete=models.CASCADE, related_name="questions"
     )
@@ -11,9 +11,12 @@ class PlaceQuestion(Common):
         "users.User", on_delete=models.CASCADE, related_name="place_questions"
     )
 
+    def __str__(self):
+        return self.pk
+
 
 class PlaceReply(Common):
-    reply = models.Textfield()
+    reply = models.TextField()
     question = models.ForeignKey(
         "qnas.PlaceQuestion", on_delete=models.CASCADE, related_name="replies"
     )
@@ -21,3 +24,5 @@ class PlaceReply(Common):
         "hosts.Host", on_delete=models.CASCADE, related_name="replies"
     )
 
+    def __str__(self):
+        return self.pk
