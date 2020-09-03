@@ -6,5 +6,5 @@ app_name = "placeReservations"
 
 
 urlpatterns = [
-    path("<int:pk>/", views.ReadDeleteReservaionView.as_view()),
+    path("<int:pk>", views.ReadDeleteReservaionView.as_view()),
 ]
