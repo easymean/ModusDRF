@@ -5,7 +5,14 @@ from . import models
 
 @admin.register(models.Host)
 class CustomHostAdmin(admin.ModelAdmin):
-    fieldsets = (("Custom Profile", {"fields": ("phone_number", "is_auth")},),)
+    fieldsets = (("Custom Profile", {"fields": ("phone_number", "email_verified")},),)
 
-    list_display = ("pk", "email", "username", "is_active", "is_staff", "is_auth")
+    list_display = (
+        "pk",
+        "email",
+        "username",
+        "is_active",
+        "is_staff",
+        "email_verified",
+    )
 

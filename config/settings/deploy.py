@@ -2,7 +2,6 @@ from .base import *  # NOQA
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["www.modus.com"]
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

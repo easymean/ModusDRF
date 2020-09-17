@@ -1,8 +1,5 @@
-import os
-import json
-import datetime
-
-from django.core.exceptions import ImproperlyConfigured
+import os, datetime
+import my_settings
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -12,21 +9,9 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
 
 
 # secret
-secret_file = os.path.join(BASE_DIR, "secrets.json")
+SECRET_KEY = my_settings.SECRET_KEY
 
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
-
-
-def get_secret(settings, secrets=secrets):
-    try:
-        return secrets[settings]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(settings)
-        raise ImproperlyConfigured(error_msg)
-
-
-SECRET_KEY = get_secret("SECRET_KEY")
+ALLOWED_HOSTS = ["127.0.0.1", ".pythonanywhere.com", "localhost"]
 
 
 # Application definition
@@ -133,3 +118,11 @@ REST_FRAMEWORK = {
 
 JWT_AUTH_COOKIE = "cookies"
 JWT_EXPIRATION_DELTA = datetime.timedelta(hours=1)
+
+EMAIL_BACKEND = my_settings.EMAIL["EMAIL_BACKEND"]
+EMAIL_USE_TLS = my_settings.EMAIL["EMAIL_USE_TLS"]
+EMAIL_PORT = my_settings.EMAIL["EMAIL_PORT"]
+EMAIL_HOST = my_settings.EMAIL["EMAIL_HOST"]
+EMAIL_HOST_USER = my_settings.EMAIL["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = my_settings.EMAIL["EMAIL_HOST_PASSWORD"]
+DEFAULT_FROM_MAIL = my_settings.EMAIL["DEFAULT_FROM_MAIL"]

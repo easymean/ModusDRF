@@ -16,7 +16,6 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", False)
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_pwd(raw_password=password)
-        user.save(using=self._db)
         return user
 
     def create_superuser(self, email, password, **extra_fields):
@@ -30,8 +29,6 @@ class UserManager(BaseUserManager):
 
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(raw_password=password)
-        user.save(using=self._db)
-
         return user
 
 
@@ -42,6 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
+    email_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"  # email을 id로 사용합니다.
     REQUIRED_FIELDS = []
@@ -63,3 +61,4 @@ class User(AbstractBaseUser, PermissionsMixin):
             return True
         else:
             return False
+

@@ -1,14 +1,16 @@
-import jwt
-import datetime
+import jwt, traceback, datetime
 
 from django.conf import settings
 from rest_framework.views import APIView
-from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.viewsets import ModelViewSet
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import status, permissions, generics, exceptions, serializers
 
 from .models import User
+from common.mails import account_activation_token
 from .serializers import RegisterUserSerializer, UserSerializer, LoginSerializer
 
 
@@ -23,7 +25,8 @@ class UserViewSet(ModelViewSet):
 
     def create(self, request):
         serializer = RegisterUserSerializer(
-            data=request.data, context={"group": "user"}
+            data=request.data,
+            context={"group": "user", "meta": request.META["HTTP_HOST"]},
         )
         try:
             serializer.is_valid(raise_exception=True)
@@ -37,6 +40,33 @@ class UserViewSet(ModelViewSet):
         user.is_active = False
         user.save()
         return Response(data={"result": "success"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class Activate(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, uid64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uid64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        try:
+            if user is not None and account_activation_token.check_token(user, token):
+                user.email_verified = True
+                user.save()
+
+                return Response(
+                    data={"email": user.email, "message": "회원가입이 완료되었습니다."},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    data={"message": "만료된 링크입니다."}, status=status.HTTP_400_BAD_REQUEST
+                )
+
+        except Exception as e:
+            print(traceback.format_exc())
 
 
 class LoginView(generics.GenericAPIView):
